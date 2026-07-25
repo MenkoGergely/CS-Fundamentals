@@ -1,4 +1,4 @@
-﻿namespace Data_Structures
+﻿namespace DataStructures
 {
     internal class Program
     {
