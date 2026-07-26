@@ -1,41 +1,38 @@
 ﻿namespace Optimization.Knapsack.Backtracking;
 
-internal class SzetvalasztasEsKorlatozasHatizsakPakolas : VisszalepesesHatizsakPakolas
+internal class BranchAndBoundKnapsackSolver : BacktrackingKnapsackSolver
 {
-    public SzetvalasztasEsKorlatozasHatizsakPakolas(HatizsakProblema problema) : base(problema)
+    public BranchAndBoundKnapsackSolver(KnapsackProblem problem) : base(problem)
     {
     }
-
-    public override bool[] OptimalisMegoldas()
+    public override bool[] OptimalSolution()
     {
-        int[] M = new int[problema.n];
-        bool[,] R = new bool[problema.n, 2];
-        for (int i = 0; i < M.Length; i++)
+        int[] optionCount = new int[problem.ItemCount];
+        bool[,] options = new bool[problem.ItemCount, 2];
+        for (int i = 0; i < optionCount.Length; i++)
         {
-            M[i] = 2;
-            R[i, 0] = true;
-            R[i, 1] = false;
+            optionCount[i] = 2;
+            options[i, 0] = true;
+            options[i, 1] = false;
         }
-
-        var opt = new SzetvalasztasEsKorlatozasOptimalizacio<bool>(problema.n, M, R, ft, fk, josag, fb);
-        bool[] optimalis = opt.OptimalisMegoldas();
-        LepesSzam = opt.LepesSzam;
-        return optimalis;
+        var optimizer = new BranchAndBound<bool>(problem.ItemCount, optionCount, options, IsCandidateValid, IsPartialSolutionValid, Fitness, Bound);
+        bool[] solution = optimizer.OptimalSolution();
+        StepCount = optimizer.StepCount;
+        return solution;
     }
-
-    private float fb(int szint, bool[] E)
+    private float Bound(int level, bool[] current)
     {
-        float b = 0;
-        for (int i = szint; i < E.Length; i++)
+        float bound = 0;
+        for (int i = level; i < current.Length; i++)
         {
-            if (problema.OsszSuly(E) + problema.w[i] <= problema.Wmax)
-                b += problema.p[i];
+            if (problem.TotalWeight(current) + problem.Weights[i] <= problem.MaxWeight)
+                bound += problem.Values[i];
         }
-        return b;
+        return bound;
     }
-    public float OptimalisErtek()
+    public float OptimalValue()
     {
-        bool[] megoldas = OptimalisMegoldas();
-        return problema.OsszErtek(megoldas);
+        bool[] solution = OptimalSolution();
+        return problem.TotalValue(solution);
     }
 }

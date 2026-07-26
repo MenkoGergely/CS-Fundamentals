@@ -1,76 +1,65 @@
 ﻿namespace Optimization.Knapsack.DynamicProgramming;
-
-internal class DinamikusHatizsakPakolas
+internal class DynamicProgrammingKnapsackSolver
 {
-    HatizsakProblema problema;
-
-    public int LepesSzam { private set; get; }
-    public DinamikusHatizsakPakolas(HatizsakProblema problema)
+    KnapsackProblem problem;
+    public int StepCount { private set; get; }
+    public DynamicProgrammingKnapsackSolver(KnapsackProblem problem)
     {
-        this.problema = problema;
+        this.problem = problem;
     }
-
-    public float[,] TablazatFeltoltes()
+    public float[,] FillTable()
     {
-        float[,] F = new float[problema.n + 1, problema.Wmax + 1];
-        for (int t = 0; t <= problema.n; t++)
+        float[,] table = new float[problem.ItemCount + 1, problem.MaxWeight + 1];
+        for (int itemIndex = 0; itemIndex <= problem.ItemCount; itemIndex++)
         {
-            F[t, 0] = 0;
+            table[itemIndex, 0] = 0;
         }
-        for (int h = 0; h <= problema.Wmax; h++)
+        for (int capacity = 0; capacity <= problem.MaxWeight; capacity++)
         {
-            F[0, h] = 0;
+            table[0, capacity] = 0;
         }
-        for (int t = 1; t <= problema.n; t++)
+        for (int itemIndex = 1; itemIndex <= problem.ItemCount; itemIndex++)
         {
-            for (int h = 1; h <= problema.Wmax; h++)
+            for (int capacity = 1; capacity <= problem.MaxWeight; capacity++)
             {
-                LepesSzam++;
-                if (h < problema.w[t - 1])
+                StepCount++;
+                if (capacity < problem.Weights[itemIndex - 1])
                 {
-
-                    F[t, h] = F[t - 1, h];
+                    table[itemIndex, capacity] = table[itemIndex - 1, capacity];
                 }
                 else
                 {
-                    F[t, h] = Math.Max(F[t - 1, h], F[t - 1, h - problema.w[t - 1]] + problema.p[t - 1]);
-
+                    table[itemIndex, capacity] = Math.Max(table[itemIndex - 1, capacity], table[itemIndex - 1, capacity - problem.Weights[itemIndex - 1]] + problem.Values[itemIndex - 1]);
                 }
             }
         }
-        return F;
+        return table;
     }
-
-    public float OptimalisErtek()
+    public float OptimalValue()
     {
-        LepesSzam = 0;
-        return TablazatFeltoltes()[problema.n, problema.Wmax];
-
+        StepCount = 0;
+        return FillTable()[problem.ItemCount, problem.MaxWeight];
     }
-    public bool[] OptimalisMegoldas()
+    public bool[] OptimalSolution()
     {
-        LepesSzam = 0;
-        float[,] F = TablazatFeltoltes();
-        bool[] O = new bool[problema.n];
-        int t = problema.n;
-        int h = problema.Wmax;
-        for (int i = 0; i < problema.n; i++)
+        StepCount = 0;
+        float[,] table = FillTable();
+        bool[] selection = new bool[problem.ItemCount];
+        int itemIndex = problem.ItemCount;
+        int capacity = problem.MaxWeight;
+        for (int i = 0; i < problem.ItemCount; i++)
         {
-            O[i] = false;
+            selection[i] = false;
         }
-        while (t > 0 && h > 0)
+        while (itemIndex > 0 && capacity > 0)
         {
-            if (F[t, h] != F[t - 1, h])
+            if (table[itemIndex, capacity] != table[itemIndex - 1, capacity])
             {
-                O[t - 1] = true;
-                h -= problema.w[t - 1];
+                selection[itemIndex - 1] = true;
+                capacity -= problem.Weights[itemIndex - 1];
             }
-            t--;
-
+            itemIndex--;
         }
-        return O;
-
+        return selection;
     }
-
-
 }

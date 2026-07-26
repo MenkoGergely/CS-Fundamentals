@@ -1,6 +1,6 @@
 ﻿namespace DataStructures.Trees;
-
-internal class TreeSet<T> : ITreeSet<T> where T : IComparable<T>
+using DataStructures.Interfaces;
+internal class TreeSet<T> : IDataStructureSet<T> where T : IComparable<T>
 {
     TreeNode<T> root;
 
@@ -37,13 +37,13 @@ internal class TreeSet<T> : ITreeSet<T> where T : IComparable<T>
         }
         else
         {
-            if (node.value.CompareTo(value) < 0)
+            if (node.Value.CompareTo(value) < 0)
             {
-                node.right = InsertIntoSubTree(node.right, value);
+                node.Right = InsertIntoSubTree(node.Right, value);
             }
-            else if (node.value.CompareTo(value) > 0)
+            else if (node.Value.CompareTo(value) > 0)
             {
-                node.left = InsertIntoSubTree(node.left, value);
+                node.Left = InsertIntoSubTree(node.Left, value);
             }
 
             return node;
@@ -53,13 +53,13 @@ internal class TreeSet<T> : ITreeSet<T> where T : IComparable<T>
     {
         if (node != null)
         {
-            if (node.value.CompareTo(value) < 0)
+            if (node.Value.CompareTo(value) < 0)
             {
-                return SubTreeContains(node.right, value);
+                return SubTreeContains(node.Right, value);
             }
-            else if (node.value.CompareTo(value) > 0)
+            else if (node.Value.CompareTo(value) > 0)
             {
-                return SubTreeContains(node.left, value);
+                return SubTreeContains(node.Left, value);
             }
             else
             {
@@ -76,27 +76,27 @@ internal class TreeSet<T> : ITreeSet<T> where T : IComparable<T>
     {
         if (node != null)
         {
-            if (node.value.CompareTo(value) < 0)
+            if (node.Value.CompareTo(value) < 0)
             {
-                node.right = RemoveFromSubTree(node.right, value);
+                node.Right = RemoveFromSubTree(node.Right, value);
             }
-            else if (node.value.CompareTo(value) > 0)
+            else if (node.Value.CompareTo(value) > 0)
             {
-                node.left = RemoveFromSubTree(node.left, value);
+                node.Left = RemoveFromSubTree(node.Left, value);
             }
             else
             {
-                if (node.left == null)
+                if (node.Left == null)
                 {
-                    node = node.right;
+                    node = node.Right;
                 }
-                else if (node.right == null)
+                else if (node.Right == null)
                 {
-                    node = node.left;
+                    node = node.Left;
                 }
                 else
                 {
-                    node.left = RemoveNodeWithTwoChildren(node, node.left);
+                    node.Left = RemoveNodeWithTwoChildren(node, node.Left);
                 }
             }
             return node;
@@ -109,15 +109,15 @@ internal class TreeSet<T> : ITreeSet<T> where T : IComparable<T>
 
     private static TreeNode<T> RemoveNodeWithTwoChildren(TreeNode<T> nodeToDelete, TreeNode<T> current)
     {
-        if (current.right != null)
+        if (current.Right != null)
         {
-            current.right = RemoveNodeWithTwoChildren(nodeToDelete, current.right);
+            current.Right = RemoveNodeWithTwoChildren(nodeToDelete, current.Right);
             return current;
         }
         else
         {
-            nodeToDelete.value = current.value;
-            current = current.left;
+            nodeToDelete.Value = current.Value;
+            current = current.Left;
             return current;
         }
     }
@@ -126,27 +126,27 @@ internal class TreeSet<T> : ITreeSet<T> where T : IComparable<T>
     {
         if (node != null)
         {
-            action(node.value);
-            TraverseSubTreePreorder(node.left, action);
-            TraverseSubTreePreorder(node.right, action);
+            action(node.Value);
+            TraverseSubTreePreorder(node.Left, action);
+            TraverseSubTreePreorder(node.Right, action);
         }
     }
     protected void TraverseSubTreeInOrder(TreeNode<T> node, Action<T> action)
     {
         if (node != null)
         {
-            TraverseSubTreeInOrder(node.left, action);
-            action(node.value);
-            TraverseSubTreeInOrder(node.right, action);
+            TraverseSubTreeInOrder(node.Left, action);
+            action(node.Value);
+            TraverseSubTreeInOrder(node.Right, action);
         }
     }
     protected void TraverseSubTreePostOrder(TreeNode<T> node, Action<T> action)
     {
         if (node != null)
         {
-            TraverseSubTreePostOrder(node.left, action);
-            TraverseSubTreePostOrder(node.right, action);
-            action(node.value);
+            TraverseSubTreePostOrder(node.Left, action);
+            TraverseSubTreePostOrder(node.Right, action);
+            action(node.Value);
         }
     }
 

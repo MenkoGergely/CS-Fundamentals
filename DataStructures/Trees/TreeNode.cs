@@ -2,14 +2,14 @@
 
 internal class TreeNode<T> where T : IComparable<T>
 {
-    public T value;
-    public TreeNode<T> left;
-    public TreeNode<T> right;
+    public T Value;
+    public TreeNode<T> Left;
+    public TreeNode<T> Right;
 
     public TreeNode(T value, TreeNode<T> left, TreeNode<T> right)
     {
-        this.value = value;
-        this.left = left;
-        this.right = right;
+        this.Value = value;
+        this.Left = left;
+        this.Right = right;
     }
 }

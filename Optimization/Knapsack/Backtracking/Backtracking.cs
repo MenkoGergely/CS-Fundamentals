@@ -1,78 +1,66 @@
 ﻿namespace Optimization.Knapsack.Backtracking;
 
-internal class VisszalepesesOptimalizacio<T>
+
+
+internal class Backtracking<T>
 {
-    protected int n;
-    protected int[] M;
-    protected T[,] R;
-    protected Func<int, T, bool> ft;
-    protected Func<int, T, T[], bool> fk;
-    protected Func<T[], float> josag;
-
-    public int LepesSzam { get; protected set; }
-    public VisszalepesesOptimalizacio(int n, int[] m, T[,] r, Func<int, T, bool> ft, Func<int, T, T[], bool> fk, Func<T[], float> josag)
+    protected int levelCount;
+    protected int[] optionCount;
+    protected T[,] options;
+    protected Func<int, T, bool> isCandidateValid;
+    protected Func<int, T, T[], bool> isPartialSolutionValid;
+    protected Func<T[], float> fitness;
+    public int StepCount { get; protected set; }
+    public Backtracking(int levelCount, int[] optionCount, T[,] options, Func<int, T, bool> isCandidateValid, Func<int, T, T[], bool> isPartialSolutionValid, Func<T[], float> fitness)
     {
-        this.n = n;
-        M = m;
-        R = r;
-        this.ft = ft;
-        this.fk = fk;
-        this.josag = josag;
+        this.levelCount = levelCount;
+        this.optionCount = optionCount;
+        this.options = options;
+        this.isCandidateValid = isCandidateValid;
+        this.isPartialSolutionValid = isPartialSolutionValid;
+        this.fitness = fitness;
     }
-
-    public virtual T[] OptimalisMegoldas()
+    public virtual T[] OptimalSolution()
     {
-        bool van = false;
-        T[] E = new T[n];
-        T[] O = new T[n];
-        BackTrack(0, ref E, ref van, ref O);
-        if (van)
+        bool found = false;
+        T[] current = new T[levelCount];
+        T[] best = new T[levelCount];
+        Backtrack(0, ref current, ref found, ref best);
+        if (found)
         {
-            return O;
+            return best;
         }
         else
-            throw new Exception("Nincs megoldas");
+            throw new Exception("No solution found");
     }
-
-
-    protected virtual void BackTrack(int szint, ref T[] E, ref bool van, ref T[] O)
+    protected virtual void Backtrack(int level, ref T[] current, ref bool found, ref T[] best)
     {
         int i = 0;
-        while (i < M[szint])
+        while (i < optionCount[level])
         {
-
-            LepesSzam++;
-            if (ft(szint, R[szint, i]))
+            StepCount++;
+            if (isCandidateValid(level, options[level, i]))
             {
-                if (fk(szint, R[szint, i], E))
+                if (isPartialSolutionValid(level, options[level, i], current))
                 {
-                    E[szint] = R[szint, i];
-                    if (szint + 1 == n)
+                    current[level] = options[level, i];
+                    if (level + 1 == levelCount)
                     {
-                        if (!van || josag(E) > josag(O))
+                        if (!found || fitness(current) > fitness(best))
                         {
-                            for (int k = 0; k < n; k++)
-                                O[k] = E[k];
-
+                            for (int k = 0; k < levelCount; k++)
+                                best[k] = current[k];
                         }
-                        van = true;
-
+                        found = true;
                     }
                     else
                     {
-                        BackTrack(szint + 1, ref E, ref van, ref O);
+                        Backtrack(level + 1, ref current, ref found, ref best);
                     }
                 }
             }
             i++;
         }
-
     }
-
-
 }
-
-
-
-
 

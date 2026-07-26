@@ -1,33 +1,30 @@
 ﻿namespace Optimization.Knapsack.Bruteforce;
 
 
-internal class NyersEro<T>
+internal class BruteForce<T>
 {
-    int m;
+    int candidateCount;
     Func<int, T> generator;
-    Func<T, float> josag;
-    public int LepesSzam { get; private set; }
-
-    public NyersEro(int m, Func<int, T> generator, Func<T, float> josag)
+    Func<T, float> fitness;
+    public int StepCount { get; private set; }
+    public BruteForce(int candidateCount, Func<int, T> generator, Func<T, float> fitness)
     {
-        this.m = m;
+        this.candidateCount = candidateCount;
         this.generator = generator;
-        this.josag = josag;
+        this.fitness = fitness;
     }
-
-
-    public T OptimalisMegoldas()
+    public T OptimalSolution()
     {
-        T O = generator(1);
-        for (int i = 2; i <= m; i++)
+        T best = generator(1);
+        for (int i = 2; i <= candidateCount; i++)
         {
-            LepesSzam++;
-            T x = generator(i);
-            if (josag(x) > josag(O))
+            StepCount++;
+            T candidate = generator(i);
+            if (fitness(candidate) > fitness(best))
             {
-                O = x;
+                best = candidate;
             }
         }
-        return O;
+        return best;
     }
 }

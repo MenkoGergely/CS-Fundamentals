@@ -1,51 +1,40 @@
-﻿namespace Optimization.Knapsack
+﻿namespace Optimization.Knapsack;
+
+public class KnapsackProblem
 {
-    public class HatizsakProblema
+    public int ItemCount { get; }
+    public int MaxWeight { get; }
+    public int[] Weights { get; }
+    public float[] Values { get; }
+    public KnapsackProblem(int itemCount, int maxWeight, int[] weights, float[] values)
     {
-        public int n { get; }
-        public int Wmax { get; }
-        public int[] w { get; }
-        public float[] p { get; }
-
-        public HatizsakProblema(int n, int wmax, int[] w, float[] p)
+        ItemCount = itemCount;
+        MaxWeight = maxWeight;
+        Weights = weights;
+        Values = values;
+    }
+    public int TotalWeight(bool[] selection)
+    {
+        int totalWeight = 0;
+        for (int i = 0; i < ItemCount; i++)
         {
-            this.n = n;
-            Wmax = wmax;
-            this.w = w;
-            this.p = p;
+            if (selection[i])
+                totalWeight += Weights[i];
         }
-
-        public int OsszSuly(bool[] pakolas)
+        return totalWeight;
+    }
+    public float TotalValue(bool[] selection)
+    {
+        float totalValue = 0;
+        for (int i = 0; i < ItemCount; i++)
         {
-
-            int osszSuly = 0;
-            for (int i = 0; i < n; i++)
-            {
-                if (pakolas[i])
-                    osszSuly += w[i];
-            }
-            return osszSuly;
-
-
+            if (selection[i])
+                totalValue += Values[i];
         }
-
-        public float OsszErtek(bool[] pakolas)
-        {
-
-            float osszErtek = 0;
-            for (int i = 0; i < n; i++)
-            {
-                if (pakolas[i])
-                    osszErtek += p[i];
-            }
-            return osszErtek;
-
-
-        }
-
-        public bool Ervenyes(bool[] pakolas)
-        {
-            return OsszSuly(pakolas) <= Wmax;
-        }
+        return totalValue;
+    }
+    public bool IsValid(bool[] selection)
+    {
+        return TotalWeight(selection) <= MaxWeight;
     }
 }

@@ -1,60 +1,57 @@
 ﻿namespace Optimization.Knapsack.Backtracking;
 
-internal class SzetvalasztasEsKorlatozasOptimalizacio<T> : VisszalepesesOptimalizacio<T>
+internal class BranchAndBound<T> : Backtracking<T>
 {
-    protected Func<int, T[], float> fb;
-    public SzetvalasztasEsKorlatozasOptimalizacio(int n, int[] m, T[,] r, Func<int, T, bool> ft, Func<int, T, T[], bool> fk, Func<T[], float> josag, Func<int, T[], float> fb) : base(n, m, r, ft, fk, josag)
+    protected Func<int, T[], float> bound;
+    public BranchAndBound(int levelCount, int[] optionCount, T[,] options, Func<int, T, bool> isCandidateValid, Func<int, T, T[], bool> isPartialSolutionValid, Func<T[], float> fitness, Func<int, T[], float> bound) : base(levelCount, optionCount, options, isCandidateValid, isPartialSolutionValid, fitness)
     {
-        this.fb = fb;
+        this.bound = bound;
     }
-    protected override void BackTrack(int szint, ref T[] E, ref bool van, ref T[] O)
+    protected override void Backtrack(int level, ref T[] current, ref bool found, ref T[] best)
     {
         int i = 0;
-        while (i < M[szint])
+        while (i < optionCount[level])
         {
             i++;
-            LepesSzam++;
-            if (ft(szint, R[szint, i - 1]))
+            StepCount++;
+            if (isCandidateValid(level, options[level, i - 1]))
             {
-                if (fk(szint, R[szint, i - 1], E))
+                if (isPartialSolutionValid(level, options[level, i - 1], current))
                 {
-                    E[szint] = R[szint, i - 1];
-                    if (szint == n - 1)
+                    current[level] = options[level, i - 1];
+                    if (level == levelCount - 1)
                     {
-                        if (!van || josag(E) > josag(O))
+                        if (!found || fitness(current) > fitness(best))
                         {
-                            for (int i2 = 0; i2 < n; i2++)
+                            for (int k = 0; k < levelCount; k++)
                             {
-                                O[i2] = E[i2];
+                                best[k] = current[k];
                             }
-                            van = true;
+                            found = true;
                         }
                     }
                     else
                     {
-                        if (josag(E) + fb(szint, E) > josag(O))
+                        if (fitness(current) + bound(level, current) > fitness(best))
                         {
-                            BackTrack(szint + 1, ref E, ref van, ref O);
+                            Backtrack(level + 1, ref current, ref found, ref best);
                         }
                     }
                 }
-
             }
-
         }
     }
-
-    public override T[] OptimalisMegoldas()
+    public override T[] OptimalSolution()
     {
-        bool van = false;
-        T[] E = new T[n];
-        T[] O = new T[n];
-        BackTrack(0, ref E, ref van, ref O);
-        if (van)
+        bool found = false;
+        T[] current = new T[levelCount];
+        T[] best = new T[levelCount];
+        Backtrack(0, ref current, ref found, ref best);
+        if (found)
         {
-            return O;
+            return best;
         }
         else
-            throw new Exception("nincs megoldas");
+            throw new Exception("No solution found");
     }
 }

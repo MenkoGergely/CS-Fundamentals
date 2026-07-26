@@ -1,53 +1,47 @@
 ﻿namespace Optimization.Knapsack.Backtracking;
 
-internal class VisszalepesesHatizsakPakolas
+internal class BacktrackingKnapsackSolver
 {
-    protected HatizsakProblema problema;
-    public int LepesSzam { get; protected set; }
-    public VisszalepesesHatizsakPakolas(HatizsakProblema problema)
+    protected KnapsackProblem problem;
+    public int StepCount { get; protected set; }
+    public BacktrackingKnapsackSolver(KnapsackProblem problem)
     {
-        this.problema = problema;
+        this.problem = problem;
     }
-
-    public virtual bool[] OptimalisMegoldas()
+    public virtual bool[] OptimalSolution()
     {
-        int[] M = new int[problema.n];
-        bool[,] R = new bool[problema.n, 2];
-        for (int i = 0; i < problema.n; i++)
+        int[] optionCount = new int[problem.ItemCount];
+        bool[,] options = new bool[problem.ItemCount, 2];
+        for (int i = 0; i < problem.ItemCount; i++)
         {
-            M[i] = 2;
-            R[i, 0] = true;
-            R[i, 1] = false;
+            optionCount[i] = 2;
+            options[i, 0] = true;
+            options[i, 1] = false;
         }
-
-
-        var opt = new VisszalepesesOptimalizacio<bool>(problema.n, M, R, ft, fk, josag);
-
-        bool[] optimalis = opt.OptimalisMegoldas();
-        LepesSzam = opt.LepesSzam;
-        return optimalis;
+        var optimizer = new Backtracking<bool>(problem.ItemCount, optionCount, options, IsCandidateValid, IsPartialSolutionValid, Fitness);
+        bool[] solution = optimizer.OptimalSolution();
+        StepCount = optimizer.StepCount;
+        return solution;
     }
-    protected float josag(bool[] pakolas)
+    protected float Fitness(bool[] selection)
     {
-        return problema.OsszErtek(pakolas);
-
+        return problem.TotalValue(selection);
     }
-    protected bool ft(int szint, bool E)
+    protected bool IsCandidateValid(int level, bool candidate)
     {
         return true;
     }
-    protected bool fk(int szint, bool van, bool[] E)
+    protected bool IsPartialSolutionValid(int level, bool isPacked, bool[] current)
     {
-        if (van)
+        if (isPacked)
         {
-            return problema.OsszSuly(E) + problema.w[szint] <= problema.Wmax;
+            return problem.TotalWeight(current) + problem.Weights[level] <= problem.MaxWeight;
         }
         return true;
-
     }
-    public float OptimalisErtek()
+    public float OptimalValue()
     {
-        bool[] megoldas = OptimalisMegoldas();
-        return problema.OsszErtek(megoldas);
+        bool[] solution = OptimalSolution();
+        return problem.TotalValue(solution);
     }
 }
