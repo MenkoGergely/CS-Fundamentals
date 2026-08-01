@@ -24,7 +24,7 @@ namespace Benchmark
         {
             Console.WriteLine($"Running benchmark for {itemCount} items.");
             KnapsackProblem problem = GenerateProblem(itemCount);
-            Type[] solverTypes = new Type[] { typeof(BruteForceKnapsackSolver), typeof(DynamicProgrammingKnapsackSolver), typeof(BacktrackingKnapsackSolver),typeof(BranchAndBoundKnapsackSolver) };
+            Type[] solverTypes =  { typeof(BruteForceKnapsackSolver), typeof(DynamicProgrammingKnapsackSolver), typeof(BacktrackingKnapsackSolver),typeof(BranchAndBoundKnapsackSolver) };
 
             foreach(Type type in solverTypes)
             {
@@ -32,7 +32,7 @@ namespace Benchmark
                 Stopwatch stopwatch = Stopwatch.StartNew();
                 float optimalValue =  solver.OptimalValue();
                 stopwatch.Stop();
-                Console.WriteLine($"- {type.Name} Érték: {optimalValue} | Lépés: {solver.StepCount} | Idő: {stopwatch.ElapsedMilliseconds} ms");
+                Console.WriteLine($"- {type.Name} Value: {optimalValue} | Step Count: {solver.StepCount} | Time: {stopwatch.ElapsedMilliseconds} ms");
             }
 
         }
