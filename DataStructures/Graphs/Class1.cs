@@ -121,42 +121,42 @@ public class GrafBejarasok
 {
     public static IDataStructureSet<V> SzelessegiBejaras<V, E>(Graf<V, E> g, V start, Action<V> muvelet) where V : IComparable<V>
     {
-        Sor<V> S = new LancoltSor<V>();
-        Halmaz<V> F = new FaHalmaz<V>();
-        S.Sorba(start);
-        F.Beszur(start);
-        while (!S.Ures)
+        Queue<V> S = new Queue<V>();
+        IDataStructureSet<V> F = new TreeSet<V>();
+        S.Enqueue(start);
+        F.Insert(start);
+        while (S.Count==0)
         {
-            V k = S.Sorbol();
+            V k = S.Dequeue();
             muvelet(k);
-            Halmaz<V> szomszedok = g.Szomszedai(k);
-            szomszedok.Bejar((x) =>
+            IDataStructureSet<V> szomszedok = g.Szomszedai(k);
+            szomszedok.Traverse((x) =>
             {
-                if (!F.Eleme(x))
+                if (!F.Contains(x))
                 {
-                    S.Sorba(x);
-                    F.Beszur(x);
+                    S.Enqueue(x);
+                    F.Insert(x);
                 }
             });
         }
         return F;
     }
 
-    public static Halmaz<V> MelysegiBejaras<V, E>(Graf<V, E> g, V start, Action<V> muvelet) where V : IComparable<V>
+    public static IDataStructureSet<V> MelysegiBejaras<V, E>(Graf<V, E> g, V start, Action<V> muvelet) where V : IComparable<V>
     {
-        Halmaz<V> F = new FaHalmaz<V>();
+        IDataStructureSet<V> F = new TreeSet<V>();
         MelysegiBejarasRekurzio(g, start, F, muvelet);
         return F;
 
     }
-    public static void MelysegiBejarasRekurzio<V, E>(Graf<V, E> g, V k, Halmaz<V> F, Action<V> muvelet) where V : IComparable<V>
+    public static void MelysegiBejarasRekurzio<V, E>(Graf<V, E> g, V k, IDataStructureSet<V> F, Action<V> muvelet) where V : IComparable<V>
     {
-        F.Beszur(k);
+        F.Insert(k);
         muvelet(k);
-        Halmaz<V> szomszedok = (FaHalmaz<V>)g.Szomszedai(k);
-        szomszedok.Bejar((x) =>
+        IDataStructureSet<V> szomszedok = (TreeSet<V>)g.Szomszedai(k);
+        szomszedok.Traverse((x) =>
         {
-            if (!F.Eleme(x))
+            if (!F.Contains(x))
             {
                 MelysegiBejarasRekurzio(g, x, F, muvelet);
             }

@@ -1,7 +1,7 @@
 ﻿namespace Optimization.Knapsack.Bruteforce;
 
 
-internal class BruteForce<T>
+public class BruteForce<T>
 {
     int candidateCount;
     Func<int, T> generator;

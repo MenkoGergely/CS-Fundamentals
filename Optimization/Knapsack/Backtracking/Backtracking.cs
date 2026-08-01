@@ -2,7 +2,7 @@
 
 
 
-internal class Backtracking<T>
+public class Backtracking<T>
 {
     protected int levelCount;
     protected int[] optionCount;

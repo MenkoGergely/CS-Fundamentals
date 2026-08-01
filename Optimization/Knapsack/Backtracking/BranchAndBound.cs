@@ -1,6 +1,6 @@
 ﻿namespace Optimization.Knapsack.Backtracking;
 
-internal class BranchAndBound<T> : Backtracking<T>
+public class BranchAndBound<T> : Backtracking<T>
 {
     protected Func<int, T[], float> bound;
     public BranchAndBound(int levelCount, int[] optionCount, T[,] options, Func<int, T, bool> isCandidateValid, Func<int, T, T[], bool> isPartialSolutionValid, Func<T[], float> fitness, Func<int, T[], float> bound) : base(levelCount, optionCount, options, isCandidateValid, isPartialSolutionValid, fitness)
@@ -32,7 +32,7 @@ internal class BranchAndBound<T> : Backtracking<T>
                     }
                     else
                     {
-                        if (fitness(current) + bound(level, current) > fitness(best))
+                        if (!found ||fitness(current) + bound(level, current) > fitness(best))
                         {
                             Backtrack(level + 1, ref current, ref found, ref best);
                         }

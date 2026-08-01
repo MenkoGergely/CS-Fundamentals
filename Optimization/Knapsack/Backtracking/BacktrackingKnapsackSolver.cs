@@ -1,6 +1,6 @@
 ﻿namespace Optimization.Knapsack.Backtracking;
 
-internal class BacktrackingKnapsackSolver
+public class BacktrackingKnapsackSolver
 {
     protected KnapsackProblem problem;
     public int StepCount { get; protected set; }
