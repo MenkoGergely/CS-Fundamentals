@@ -1,5 +1,5 @@
 ﻿namespace Optimization.Knapsack.DynamicProgramming;
-public class DynamicProgrammingKnapsackSolver
+public class DynamicProgrammingKnapsackSolver : IKnapsackSolver
 {
     KnapsackProblem problem;
     public int StepCount { private set; get; }

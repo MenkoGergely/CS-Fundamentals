@@ -1,6 +1,6 @@
 ﻿namespace Optimization.Knapsack.Backtracking;
 
-public class BranchAndBoundKnapsackSolver : BacktrackingKnapsackSolver
+public class BranchAndBoundKnapsackSolver : BacktrackingKnapsackSolver , IKnapsackSolver
 {
     public BranchAndBoundKnapsackSolver(KnapsackProblem problem) : base(problem)
     {

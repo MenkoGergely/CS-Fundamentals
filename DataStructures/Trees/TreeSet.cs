@@ -1,6 +1,6 @@
 ﻿namespace DataStructures.Trees;
 using DataStructures.Interfaces;
-internal class TreeSet<T> : IDataStructureSet<T> where T : IComparable<T>
+internal class TreeSet<T> : ISimpleSet<T> where T : IComparable<T>
 {
     TreeNode<T> root;
 

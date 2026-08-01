@@ -1,6 +1,6 @@
 ﻿namespace Optimization.Knapsack.Bruteforce;
 
-public class BruteForceKnapsackSolver
+public class BruteForceKnapsackSolver : IKnapsackSolver
 {
     KnapsackProblem problem;
     public int StepCount { get; private set; }

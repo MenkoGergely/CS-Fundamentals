@@ -1,11 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>DataStructures</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <StartupObject>Benchmark.Program</StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Optimization\Optimization.csproj" />
+  </ItemGroup>
 
 </Project>
