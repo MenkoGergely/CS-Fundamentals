@@ -1,6 +1,6 @@
 ﻿namespace DataStructures.Trees;
 
-internal class TreeNode<T> where T : IComparable<T>
+public class TreeNode<T> where T : IComparable<T>
 {
     public T Value;
     public TreeNode<T> Left;
